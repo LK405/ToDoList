@@ -2,17 +2,40 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import './form.scss'
 
+import { useTaskStore } from '../../store/taskStore';
+import { useGoalStore } from '../../store/goalStore';
+import { useMenuStore } from '../../store/menuStore'; 
+import { useRef } from 'react';
+
 
 type FormTaskAndGoalProps = {
-	onAdd?:()=> void
+    onAdd?: () => void
 }
-  
 
-    function FormTaskAndGoal({onAdd}:FormTaskAndGoalProps) {
-        
-        const handleSubmit = (e: React.SubmitEvent) => {
+
+function FormTaskAndGoal({ onAdd }: FormTaskAndGoalProps) {
+
+    const inputRefName = useRef<HTMLInputElement>(null);
+    const inputRefDescription = useRef<HTMLTextAreaElement>(null);
+    const inputRefDueDate = useRef<HTMLInputElement>(null);
+    const isActiveInMenu = useMenuStore((state) => state.menu.active);
+    const addTask = useTaskStore((state) => state.addTask);
+    const addGoal = useGoalStore((state) => state.addGoal);
+
+    const handleSubmit = (e: React.SubmitEvent) => {
         e.preventDefault()
-        if(onAdd){
+        const name = inputRefName.current?.value;
+        const description = inputRefDescription.current?.value;
+        const dueDate = inputRefDueDate.current?.value;
+        if (name && description && dueDate) {
+            if (isActiveInMenu === 'tasks') {
+                addTask({ id: Date.now(), name, description, dueDate });
+            } else {
+                addGoal({ id: Date.now(), name, description, dueDate });
+            }
+        }
+
+        if (onAdd) {
             onAdd()
         }
     }
@@ -22,13 +45,15 @@ type FormTaskAndGoalProps = {
             <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3">
                     <Form.Label>Name</Form.Label>
-                    <Form.Control type="text" /> </Form.Group>
-                <Form.Group className="mb-3">
-                    <Form.Label>Description</Form.Label> <Form.Control as="textarea" rows={3} />
+                    <Form.Control type="text" ref={inputRefName} />
                 </Form.Group>
                 <Form.Group className="mb-3">
-                    <Form.Label>Due Date</Form.Label>
-                    <Form.Control type="date" />
+                    <Form.Label>Description</Form.Label>
+                    <Form.Control as="textarea" rows={3} ref={inputRefDescription} />
+                </Form.Group>
+                <Form.Group className="mb-3">
+                    <Form.Label>Due Date</Form.Label >
+                    <Form.Control type="date" ref={inputRefDueDate} />
                 </Form.Group>
 
                 <Button type="submit" variant="light" >
