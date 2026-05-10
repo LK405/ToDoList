@@ -10,7 +10,8 @@ type FormTaskAndGoalProps = {
 
     function FormTaskAndGoal({onAdd}:FormTaskAndGoalProps) {
         
-        const handleSubmit = (e: React.SubmitEvent) => {
+        const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+
         e.preventDefault()
         if(onAdd){
             onAdd()
