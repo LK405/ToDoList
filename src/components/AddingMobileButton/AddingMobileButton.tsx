@@ -4,7 +4,7 @@ import './AddingMobileButton.scss'
 
 function AddingMobileButton() {
     return (
-        <Button variant="info" className='btn-addgoal float-left'>Add Goal</Button>);
+        <Button variant="info" className='btn-addgoal float-left'>Añadir MEta</Button>);
 
 
 }
